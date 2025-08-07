@@ -1,8 +1,8 @@
-FROM maven:3.8.5-openjdk-17 AS build
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 COPY . .
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17.0.1-jdk-slim
+FROM eclipse-temurin:17-jre-alpine
 COPY --from=build /target/chowdome-0.0.1-SNAPSHOT.jar /app/chowdome.jar
 EXPOSE 8000
 ENTRYPOINT [ "java","-jar", "/app/chowdome.jar" ]
