@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -246,22 +247,27 @@ public class StoreController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public Object deleteStore(@PathVariable Long id) {
-        if (storeRepo.existsById(id)) {
-            userRepo.deleteByEmail(storeRepo.findById(id).get().getEmail());
-            storeRepo.deleteById(id);
-            
-            return Map.of(
-                "error", false,
-                "message", "Store deleted successfully"
-            );
-        } else {
-            return Map.of(
-                "error", true,
-                "message", "Store not found"
-            );
-        }
+public Object deleteStore(@PathVariable Long id) {
+    Optional<Store> store = storeRepo.findById(id);
+
+    if (store.isPresent()) {
+        // Store found, proceed with deletion
+        userRepo.deleteByEmail(store.get().getEmail());
+        storeRepo.deleteById(id);
+
+        return Map.of(
+            "error", false,
+            "message", "Store deleted successfully"
+        );
+    } else {
+        // Store not found
+        return Map.of(
+            "error", true,
+            "message", "Store not found"
+        );
     }
+}
+
         
         
 
