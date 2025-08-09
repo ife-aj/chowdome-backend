@@ -252,8 +252,12 @@ public Object deleteStore(@PathVariable Long id) {
 
     if (store.isPresent()) {
         // Store found, proceed with deletion
-        userRepo.deleteByEmail(store.get().getEmail());
+        Users user = store.get().getUser();
+        long userId = user.getId();
         storeRepo.deleteById(id);
+        userRepo.deleteById(userId); // Delete the associated user as well
+        
+        
 
         return Map.of(
             "error", false,
